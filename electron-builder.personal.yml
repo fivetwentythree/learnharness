@@ -1,0 +1,17 @@
+# Personal Apple Silicon build. No certificates, notarization, uploads, or
+# upstream update feed. The standard release configuration stays unchanged.
+extends: ./electron-builder.yml
+directories:
+  output: dist/personal
+publish: null
+extraMetadata:
+  lhPersonalBuild: true
+artifactName: "${productName}-${version}-personal-${arch}.${ext}"
+mac:
+  identity: null
+  notarize: false
+  hardenedRuntime: false
+# desktop:personal selects --dir first, then --mac dmg --arm64 explicitly.
+# Inherited target arrays concatenate, so do not repeat the base targets here.
+dmg:
+  sign: false

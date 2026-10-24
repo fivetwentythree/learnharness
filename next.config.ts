@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
+	// A nested checkout must not inherit a parent repository's lockfile/root.
+	// The desktop payload expects server.js directly under .next/standalone.
+	turbopack: { root: projectRoot },
+	outputFileTracingRoot: projectRoot,
 	// Desktop target (Electron wrapper, 2026-09-17): standalone output = a
 	// self-contained .next/standalone/server.js the Electron shell spawns
 	// on 127.0.0.1. Harmless for plain web deploys (extra build output).
@@ -39,6 +47,9 @@ const nextConfig: NextConfig = {
 		"*": [
 			"data/**/*",
 			"auth.json",
+			"chatgpt-auth.json",
+			"chatgpt-auth.json.*",
+			"chatgpt-auth.json.*/**/*",
 			".env*",
 		],
 	},

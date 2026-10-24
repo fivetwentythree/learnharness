@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { contextWindow, sessionCost, turnCost, type ChatSettings, type TurnUsage } from "@/src/core";
+import { CHATGPT_PROVIDER, contextWindow, sessionCost, turnCost, type ChatSettings, type TurnUsage } from "@/src/core";
 import { formatTokens, formatUsd, prettyModel } from "@/components/usage-format";
 import { ModelControl, catalogLimits, useModelCatalog } from "@/components/model-picker";
 
@@ -87,7 +87,7 @@ export function StatsBar({
 	// Honest cost: show dollars only when at least one turn priced;
 	// otherwise "—" (never a fake $0.0000).
 	const pricedCount = turns.length - unpriced;
-	const costLabel = pricedCount > 0 ? formatUsd(cost) : "—";
+	const costLabel = pricedCount > 0 ? formatUsd(cost) : turns.length > 0 && turns.every((turn) => turn.model.startsWith(`${CHATGPT_PROVIDER}:`)) ? "ChatGPT plan" : "—";
 	const lastModel = turns.at(-1)?.model;
 
 	return (

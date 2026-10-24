@@ -23,6 +23,8 @@ import { piModels } from "../agent/models.ts";
 import { settingsStore } from "../store/settings.ts";
 import { effectiveSettings } from "./stores.ts";
 import { keyValue } from "./keys.ts";
+import { chatGPTAuth } from "./chatgpt.ts";
+import { CHATGPT_PROVIDER } from "../core/chatgpt.ts";
 import type { ChatSettings } from "../core/contracts/chat.ts";
 import type {
 	CatalogDefaults,
@@ -121,11 +123,13 @@ export function catalogSlots(): SlotPins {
  *  with keyPresent read env-wins through the keys seam, fresh per call —
  *  saving a key immediately federates the provider into the picker. */
 export function catalogProviders(): CatalogProvider[] {
-	return AUTH_PROVIDER_KEYS.map((p) => ({
+	const providers: CatalogProvider[] = AUTH_PROVIDER_KEYS.map((p) => ({
 		id: p.id,
 		envVar: p.envVar,
 		keyPresent: keyValue(p.envVar) !== undefined,
-	})).sort((a, b) => a.id.localeCompare(b.id));
+	}));
+	if (chatGPTAuth.connected()) providers.push({ id: CHATGPT_PROVIDER, envVar: null, keyPresent: true, authType: "oauth" });
+	return providers.sort((a, b) => a.id.localeCompare(b.id));
 }
 
 /** The providers whose key is present — the picker federates exactly
@@ -141,6 +145,7 @@ export function toModelDto(model: Model<Api>): ModelDto {
 		id: model.id,
 		name: model.name,
 		provider: model.provider,
+		...(model.provider === CHATGPT_PROVIDER ? { billing: "chatgpt-plan" as const } : {}),
 		reasoning: model.reasoning,
 		input: [...model.input],
 		supportedLevels: getSupportedThinkingLevels(model),

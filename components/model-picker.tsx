@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ChatSettings, ModelCatalogEntry, ModelCatalogResponse, ModelsSettings, UserSettings } from "@/src/core";
+import { CHATGPT_USAGE_URL, type ChatSettings, type ModelCatalogEntry, type ModelCatalogResponse, type ModelsSettings, type UserSettings } from "@/src/core";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
 import { prettyModel } from "@/components/usage-format";
 import { ModelMenuList, ThinkingMenuList } from "@/components/settings/model-menu";
@@ -62,6 +62,7 @@ export function useModelCatalog(): { catalog: ModelCatalogResponse | undefined; 
 				/* refresh is best-effort: the cached list stays on failure */
 			});
 	}, []);
+	useSettingsSaved((section) => { if (section === "keys") refresh(); });
 	return { catalog, refresh };
 }
 
@@ -377,6 +378,12 @@ export function ModelControl({ chatId }: { chatId?: string }) {
 				<span aria-hidden className="text-xs text-muted-foreground">▾</span>
 			</button>
 			</Hint>
+
+			{entry?.billing === "chatgpt-plan" && (
+				<span className="text-xs text-muted-foreground" data-testid="chatgpt-plan-active">
+					Using ChatGPT plan · <a href={CHATGPT_USAGE_URL} target="_blank" rel="noopener noreferrer" className="underline">Manage usage</a>
+				</span>
+			)}
 
 			{/* The shared dropdown body (extracted 2026-09-20): the agent
 			    settings' slot selects and the setup dialog use the exact same

@@ -41,12 +41,24 @@ Secrets and machine-specific paths only. Model choice and thinking budgets are t
 
 | Variable | Purpose |
 |---|---|
-| `OPENROUTER_API_KEY` | required — all LLM calls go through OpenRouter |
+| `OPENROUTER_API_KEY` | optional — needed only when OpenRouter is selected; other providers and ChatGPT plan sign-in are alternatives |
 | `GOOGLE_SEARCH_API_KEY` + `GOOGLE_CSE_ID` | researcher's `web_search` (Google Custom Search) |
 | `DEEPGRAM_API_KEY` | optional — dictation (STT token minting; audio streams browser→Deepgram, never through the server) |
 | `CHROME_PATH` | optional system Chrome fallback for demo verification; the app's own browser helper is primary (nothing is downloaded) |
 
 The packaged desktop app takes keys from `userData/auth.json` (BYOK, mode 0600, read/written directly by the server via `LH_AUTH_FILE`). PDFs render natively with pdfjs/Skia; SVGs use resvg.
+
+### ChatGPT subscription sign-in
+
+In the desktop app or locally running browser version, open **Settings → Keys → ChatGPT subscription** (also available in first-run setup), choose **Continue with ChatGPT**, and authorize plan usage in your system browser. Then select **ChatGPT plan** models for Strong, Cheap, and Vision. Signing in never changes existing model selections or API keys.
+
+This uses OpenAI's official [Sign in with ChatGPT](https://developers.openai.com/siwc/token-sharing-open-source) flow and the public Responses endpoint, not ChatGPT's private backend or a Codex client ID. Eligible requests use the user's ChatGPT plan allowance or permitted credits. Limits and eligibility are controlled by OpenAI. **Manage usage** opens ChatGPT settings; a subscription failure never falls back to API-key billing. External web search and dictation remain separately configured services.
+
+OAuth registrations, a stable host ID, account-specific model lists, and rotating credentials live in `chatgpt-auth.json` beside the file selected by `LH_AUTH_FILE`. The file is atomically written with owner-only Unix permissions, locked across processes, ignored by Git, and excluded from desktop payloads. Tokens never enter browser storage, model settings, or the API-key environment map. Sign-out attempts remote revocation, clears local tokens, and retains the verified client/account mapping for reconnect.
+
+Account availability comes from OpenAI's authenticated model-list endpoint. Capability metadata comes from the installed pi-ai catalog: unknown models are not offered with guessed context limits or image/thinking support. Upgrade the engine when an account model is newer than that catalog.
+
+Tests use synthetic credentials, mocked OpenAI/JWKS responses, and an in-memory callback transport; they do not sign into a real account. Release verification still needs an interactive sign-in, model request, refresh/reconnect, and sign-out with an eligible account.
 
 ## Architecture
 

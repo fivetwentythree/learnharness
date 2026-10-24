@@ -47,6 +47,7 @@ import { ProviderMenuList } from "@/components/settings/model-menu";
 import { defaultOrderLevel, populateLevel, THINKING_LABEL } from "@/components/thinking-default";
 import { ThinkingMenuList } from "@/components/settings/model-menu";
 import type { ThinkingLevel } from "@earendil-works/pi-agent-core";
+import { ChatGPTConnection } from "@/components/chatgpt-connection";
 
 /** The pickers' slot identity — same roster language as the Agent
  *  section's slot rows. */
@@ -420,6 +421,10 @@ export function SetupDialog({
 					</button>
 </Hint>
 				</header>
+
+				<div className="border-b border-border px-6 py-4">
+					<ChatGPTConnection />
+				</div>
 
 				{stage === "keys" ? (
 					<div className="flex flex-col px-6 py-5">

@@ -68,6 +68,8 @@ export * from "./session-navigation.ts";
 // shape rules + masking — pure, browser-safe (the auth page binds to the
 // /api/keys routes built on it).
 export * from "./auth-keys.ts";
+export { CHATGPT_PROVIDER, CHATGPT_USAGE_URL } from "./chatgpt.ts";
+export type { ChatGPTAccountInfo, ChatGPTStatus } from "./chatgpt.ts";
 // keyboard.ts: the shortcut registry + binding normalization (pure, browser-safe).
 export * from "./keyboard.ts";
 export * from "./coverage.ts";

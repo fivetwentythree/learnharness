@@ -306,8 +306,21 @@ body {
 	--color-sidebar: var(--card);
 }
 
-/* Mermaid diagrams: keep wide charts inside the content column. Mermaid
- * inlines a px max-width on the svg, so !important is required to win. */
+/* Both inline and expanded Pele diagrams inherit the existing app palette.
+ * Keep these tokens outside .lh-prose: the focus overlay is its sibling. */
+[data-streamdown="mermaid"],
+[data-lh-overlay-chart] {
+	--pele-bg: var(--background);
+	--pele-fg: var(--foreground);
+	--pele-muted: var(--muted-foreground);
+	--pele-line: var(--muted-foreground);
+	--pele-surface: var(--card);
+	--pele-surface-alt: var(--accent);
+	--pele-border: var(--border);
+	--pele-accent: var(--primary);
+}
+
+/* Keep wide diagrams inside the content column. */
 [data-streamdown="mermaid"] svg {
 	max-width: 100% !important;
 	height: auto !important;

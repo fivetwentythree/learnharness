@@ -16,10 +16,13 @@
  * file, and `shadowedByEnv` explains why a saved key is not the live one
  * (env always wins).
  */
-import { keyStatuses, providerKeyList } from "@/src/server";
+import { chatGPTAuth, keyStatuses, providerKeyList } from "@/src/server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-	return Response.json({ keys: keyStatuses(), providers: providerKeyList() });
+	return Response.json({
+		keys: keyStatuses(), providers: providerKeyList(),
+		chatgpt: { connected: chatGPTAuth.connected() },
+	}, { headers: { "Cache-Control": "no-store" } });
 }

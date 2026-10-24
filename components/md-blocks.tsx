@@ -132,8 +132,8 @@ export function codeSource(children: ReactNode): string {
 	return "";
 }
 
-/** Mermaid, in the message flow: the bare chart (dark theme, rendered via
- *  the app's own plugin — components/mermaid-render.ts), the hover corner
+/** Mermaid source, in the message flow: the bare chart (rendered via
+ *  Pele in components/mermaid-render.ts), the hover corner
  *  with copy + expand, the house error fallback. No container chrome, no
  *  zoom pill — the zoom/pan home is the session overlay. While the fence is
  *  still streaming (the trailing open fence), a quiet skeleton instead of a

@@ -143,3 +143,7 @@ export const PROMPTS_OVERRIDE_DIR = path.join(DATA_ROOT, "prompts");
 export const AUTH_FILE = process.env.LH_AUTH_FILE
 	? path.resolve(process.env.LH_AUTH_FILE)
 	: path.join(ROOT, "auth.json");
+
+/** OAuth registrations stay separate from the flat API-key map. Follow its
+ * location so desktop, dev-fresh, and tests keep the same isolation boundary. */
+export const CHATGPT_AUTH_FILE = path.join(path.dirname(AUTH_FILE), "chatgpt-auth.json");

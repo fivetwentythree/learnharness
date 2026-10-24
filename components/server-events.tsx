@@ -26,6 +26,7 @@
  */
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 import { SERVER_EVENT_TYPES, type ServerEventType, type ServerEvents } from "@/src/core";
+import { notifySettingsSaved } from "@/components/settings-signal";
 
 /** The minimal source surface the provider consumes — EventSource behind
  *  this in production, fakes in tests. */
@@ -118,6 +119,16 @@ const EventsContext = createContext<ReturnType<typeof createNotifyHub> | null>(n
 
 export function ServerEventsProvider({ children, connect }: { children: ReactNode; connect?: () => NotifySource }) {
 	const hub = useMemo(() => createNotifyHub(), []);
+	// OAuth completes in the system browser. Reuse the existing keys signal
+	// so all setup guards/catalog readers update, including other windows.
+	useEffect(() => {
+		const off = hub.subscribe("chatgpt-changed", () => notifySettingsSaved("keys"));
+		return () => { off(); };
+	}, [hub]);
+	useEffect(() => {
+		const off = hub.onResync(() => notifySettingsSaved("keys"));
+		return () => { off(); };
+	}, [hub]);
 	useEffect(() => wireSource((connect ?? openEventsChannel)(), hub), [hub, connect]);
 	return <EventsContext.Provider value={hub}>{children}</EventsContext.Provider>;
 }

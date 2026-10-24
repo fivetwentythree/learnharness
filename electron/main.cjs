@@ -448,6 +448,10 @@ function setupAutoUpdater() {
 		log("auto-update: dev build — updater disabled");
 		return;
 	}
+	if (require("../package.json").lhPersonalBuild === true) {
+		log("auto-update: personal build — updater disabled");
+		return;
+	}
 	try {
 		autoUpdater = require("electron-updater").autoUpdater;
 	} catch (err) {

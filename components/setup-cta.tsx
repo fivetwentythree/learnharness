@@ -30,8 +30,9 @@ import { useSettingsSaved } from "@/components/settings-signal";
 export function hasProviderKey(
 	statuses: readonly AuthKeyStatus[],
 	providers: readonly ProviderKeyInfo[] | undefined,
+	chatGPTConnected = false,
 ): boolean {
-	return classifyKeys(statuses, providers).providerRows.some((s) => s.present);
+	return chatGPTConnected || classifyKeys(statuses, providers).providerRows.some((s) => s.present);
 }
 
 /** The zero-keys truth for the calling page: TRUE only after a
@@ -44,8 +45,8 @@ export function useZeroKeys(): boolean {
 	const read = useCallback(() => {
 		fetch("/api/keys")
 			.then((r) => r.json())
-			.then((body: { keys?: AuthKeyStatus[]; providers?: ProviderKeyInfo[] }) => {
-				setZeroKeys(!hasProviderKey(body.keys ?? [], body.providers));
+			.then((body: { keys?: AuthKeyStatus[]; providers?: ProviderKeyInfo[]; chatgpt?: { connected: boolean } }) => {
+				setZeroKeys(!hasProviderKey(body.keys ?? [], body.providers, body.chatgpt?.connected));
 			})
 			.catch(() => {});
 	}, []);
@@ -69,7 +70,7 @@ export function ZeroKeysPill({ onOpen, inline = false }: { onOpen: () => void; i
 			onClick={onOpen}
 			className="rounded-sm border border-border bg-card px-3 py-1.5 font-ui text-xs text-foreground transition-colors hover:border-muted-foreground/50 hover:bg-accent cursor-pointer"
 		>
-			Add a provider key
+			Connect an AI provider
 		</button>
 	);
 	return inline ? button : <div className="pointer-events-auto mb-2 flex justify-center">{button}</div>;

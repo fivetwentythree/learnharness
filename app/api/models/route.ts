@@ -1,4 +1,4 @@
-import { modelCatalog } from "@/src/server";
+import { chatGPTAuth, modelCatalog } from "@/src/server";
 
 /**
  * The model picker's data (model-control wave): pi-ai's configured-provider
@@ -7,5 +7,8 @@ import { modelCatalog } from "@/src/server";
  * catalog: no network, stable within a pi-ai version.
  */
 export async function GET() {
-	return Response.json(modelCatalog());
+	// Ordinary API-key catalogs remain offline. Only a connected ChatGPT
+	// account refreshes its authorized choices (bounded cache, no fallback).
+	await chatGPTAuth.refreshModels().catch(() => undefined);
+	return Response.json(modelCatalog(), { headers: { "Cache-Control": "no-store" } });
 }

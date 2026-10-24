@@ -15,6 +15,8 @@ export interface ModelCatalogEntry {
 	id: string;
 	name: string;
 	provider: string;
+	/** Subscription models must not be presented as API-priced or free. */
+	billing?: "chatgpt-plan";
 	reasoning: boolean;
 	input: ("text" | "image")[];
 	/** The thinking levels this model actually accepts (pi's
@@ -79,7 +81,8 @@ export interface ModelCatalogResponse {
 export interface CatalogProvider {
 	id: string;
 	/** The env var whose presence federates this provider in. */
-	envVar: string;
+	envVar: string | null;
+	authType?: "oauth";
 	/** Whether that var is currently present (env or auth file). */
 	keyPresent: boolean;
 }

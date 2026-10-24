@@ -37,6 +37,14 @@ npx electron-builder --win --x64 --publish never
 npx electron-builder --linux --x64 --publish never
 ```
 
+### Personal Apple Silicon DMG
+
+Run `npm run desktop:personal` on an Apple Silicon Mac with the icon toolchain above. It builds and smoke-tests the standalone server, packages the ARM64 app, applies a local ad-hoc signature, and creates `dist/personal/LearnHarness-<version>-personal-arm64.dmg`. It does not install anything in `/Applications`.
+
+This separate profile uses no Developer ID certificate, notarization, timestamp service, or release upload. It omits the upstream update feed and embeds `lhPersonalBuild: true`, which disables the updater even if a feed override exists. The standard release configuration is unchanged. macOS may require explicit approval to open this non-notarized app.
+
+The app name, bundle ID, and saved-data location are unchanged. Installing it over LearnHarness replaces that installed copy and reuses its data; back up the existing data before replacement. ChatGPT account approval and a real subscription-backed model request still require an interactive check after installation.
+
 ## CI vs release
 
 `.github/workflows/ci.yml` runs on main pushes and pull requests:
